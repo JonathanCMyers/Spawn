@@ -114,7 +114,7 @@ setInterval(function() {
 		socket.emit('update',pack);
 		socket.emit('remove',removePack);
 	}
-	printTotalObjects();
+	//printTotalObjects();
 	initPack.player = [];
 	initPack.bullet = [];
 	initPack.fireball = [];
@@ -134,7 +134,6 @@ printTotalObjects = function() {
 		bulletLength++;
 	}
 	for(var i in Fireball.list) {
-		if(Fireball.list[i] === undefined) continue;
 		fireballLength++;
 	}
 	console.log("Player: " + playerLength);
