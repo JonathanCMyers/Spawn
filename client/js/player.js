@@ -1,6 +1,7 @@
 var Player_Default_Max_Speed = 8;
 var Player_Dash_Speed = 55;
 var Player_Speed_Boost_Speed = 13;
+var Player_Respawn_Timer = 5*25;
 
 var Player = function(id, user_name) {
         var self = Entity();
@@ -23,25 +24,35 @@ var Player = function(id, user_name) {
 	self.abilities = {};
 	self.cooldowns = {};
 	self.activeAbilities = {};
+	self.shields = {};
+	self.bigShieldID = -1;
+	self.smallShieldID = -1;
+	self.shieldHP = 0;
+
+	self.respawning = false;
+	self.respawnTimer = 0;
 
         var super_update = self.update;
         self.update = function() {
-                self.updateSpd();
-		self.updateAbilities();
-		super_update();
+		self.checkRespawn();
+		if(!self.respawning) {
+                	self.updateSpd();
+			self.updateAbilities();
+			super_update();
+		}
         }
 
 	self.updateAbilities = function() {
 		self.updateAbilityDurations();
 		self.updateAbilityCooldowns();
 		self.checkRemoveAbilityEffects();
+		
 	}
 
 	self.updateAbilityDurations = function() {
 		for(var i in self.abilities) {
 			if(self.abilities[i].currentDuration > 0) {
 				self.abilities[i].currentDuration--;
-				self.score = self.maxSpd;
 				if(self.abilities[i].currentDuration === 0) {
 					self.abilities[i].toRemove = true;
 				}
@@ -68,14 +79,20 @@ var Player = function(id, user_name) {
 					self.maxSpd = Player_Default_Max_Speed;
 				}
 				if(self.abilities[i].name === 'bigShield') {
-					
+					if(self.shieldHP <= 0) console.log("SHIELD ERROR!");
+					self.shieldHP = self.shieldHP - self.shields[self.bigShieldID].hp;
+					delete self.shields[self.bigShieldID];
+					self.bigShieldID = -1;
+					console.log("Shield removed. " + self.shieldHP);
 				}
 				if(self.abilities[i].name === 'smallShield') {
-					
+					if(self.shieldHP <= 0) console.log("SHIELD ERROR!");
+					self.shieldHP = self.shieldHP - self.shields[self.smallShieldID].hp;
+					delete self.shields[self.smallShieldID];
+					self.smallShieldID = -1;
 				}
 				if(self.abilities[i].name === 'fireball') {
-					//if(self.directionFacing 
-					//Fireball.list.push(Fireball(self.x, self.y,));
+					
 				}
 				if(self.abilities[i].name === 'freeze') {
 					
@@ -106,7 +123,7 @@ var Player = function(id, user_name) {
                         self.spdY = 0;
         }
         self.getInitPack = function() {
-                return {
+		return {
                         id:self.id,
                         x:self.x,
                         y:self.y,
@@ -115,6 +132,8 @@ var Player = function(id, user_name) {
                         hpMax:self.hpMax,
                         score:self.score,
 			directionFacing:self.directionFacing,
+			shieldHP:self.shieldHP,
+			respawning:self.respawning,
                 };
         }
 
@@ -126,7 +145,9 @@ var Player = function(id, user_name) {
                         hp:self.hp,
                         score:self.score,
 			directionFacing:self.directionFacing,
-                }
+			shieldHP:self.shieldHP,
+                	respawning:self.respawning,
+		}
         }
 
 	self.checkAvailableAbilities = function(keyValue) {
@@ -158,11 +179,24 @@ var Player = function(id, user_name) {
 		}
 		if(self.abilities[keyValue].name === 'bigShield') {
 			// attach a large shield object onto the player for the duration
+			self.abilities[keyValue].currentDuration = self.abilities[keyValue].duration;
 			self.cooldowns[keyValue] = self.abilities[keyValue].cooldown;
+			self.bigShieldID = 1;
+			var hp = self.abilities[keyValue].hp;
+			var duration = self.abilities[keyValue].duration;
+			self.shields[self.bigShieldID] = Shield(hp, duration, self.x, self.y, true);
+			self.shieldHP = self.shieldHP + hp;
+			console.log("Shield Created");
 		}
 		if(self.abilities[keyValue].name === 'smallShield') {
 			// attach a small shield object onto the player for the duration
+			self.abilities[keyValue].currentDuration = self.abilities[keyValue].duration;
 			self.cooldowns[keyValue] = self.abilities[keyValue].cooldown;
+			self.smallShieldID = 2;
+			var hp = self.abilities[keyValue].hp;
+			var duration = self.abilities[keyValue].duration;
+			self.shields[self.smallShieldID] = Shield(hp, duration, self.x, self.y, false);
+			self.shieldHP = self.shieldHP + hp;
 		}
 		if(self.abilities[keyValue].name === 'fireball') {
 			// spit out a fireball in the direction the player is facing
@@ -194,50 +228,53 @@ var Player = function(id, user_name) {
 
 	self.giveRandomAbility = function() {
 		// binds random ability to 'q'
-		var abilityCount = 2;
+		var abilityCount = 5;
 		console.log("ability given:");
-		//var r = Math.floor(Math.random()*abilityCount+1);
-		var r = 5;
+		var r = Math.floor(Math.random()*abilityCount+1);
+		r = 5;
 		if(r === 1) {
 			self.abilities[81] = Ability('dash',1);
 			self.cooldowns[81] = 0;
 			console.log("dash");
 		}
-		if(r === 2) {
+		else if(r === 2) {
 			self.abilities[81] = Ability('speed',1);
 			self.cooldowns[81] = 0;
 			console.log("speed");
 		}
-		if(r === 3) {
+		else if(r === 3) {
 		    	self.abilities[81] = Ability('bigShield',1);
                 	self.cooldowns[81] = 0;
 			console.log("bigShield");
 		}
-		if(r === 4) {
+		else if(r === 4) {
 			self.abilities[81] = Ability('smallShield',1);
                 	self.cooldowns[81] = 0;
 			console.log("smallShield");
 		}
-		if(r === 5) {
+		else if(r === 5) {
 			self.abilities[81] = Ability('fireball',1);
                 	self.cooldowns[81] = 0;
 			console.log("fireball");
 		}
-		if(r === 6) {
+		else if(r === 6) {
 			self.abilities[81] = Ability('freeze',1);
 			self.cooldowns[81] = 0;
 			console.log("freeze");
 		}
-                if(r === 7) {
+                else if(r === 7) {
 			self.abilities[81] = Ability('stealth',1);
 			self.cooldowns[81] = 0;
 			console.log("stealth");
 		}
-                if(r === 8) {
+                else if(r === 8) {
 			self.abilities[81] = Ability('bolts',1);
 			self.cooldowns[81] = 0;
 			console.log("bolts");
 		}
+
+		self.abilities[32] = Ability('knife',1);
+		self.cooldowns[32] = 0;
 	}
 	
 	self.getAbilities = function() {
@@ -245,12 +282,33 @@ var Player = function(id, user_name) {
 	}
 
 	self.damage = function(hp) {
+
+		// NOTE: When messing with damage, remove hp from the shields first before payer hp
+	
 		/*
 		self.hp = self.hp - hp;
 		if(self.hp <= 0) {
 			
 		}
 		*/
+		self.hp = self.hp - hp;
+
+		if(self.hp <= 0) {
+			self.respawning = true;
+			self.respawnTimer = Player_Respawn_Timer;
+		}
+
+	}
+
+	self.checkRespawn = function() {
+		if(self.respawning) {
+			self.respawnTimer--;
+			if(self.respawnTimer === 0) {
+				self.respawning = false;
+				self.x = Math.floor(Math.random()*400);
+				self.y = Math.floor(Math.random()*400);
+			}
+		}
 	}
 
         Player.list[id] = self;

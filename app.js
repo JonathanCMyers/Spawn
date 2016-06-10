@@ -38,6 +38,7 @@ eval(fs.readFileSync(__dirname + '/client/js/player.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/fireball.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/ability.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/bullet.js') + '');
+eval(fs.readFileSync(__dirname + '/client/js/shield.js') + '');
 /********************/
 /*  End of Imports  */
 /********************/

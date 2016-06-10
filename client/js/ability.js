@@ -14,6 +14,10 @@ var Ability = function(name, level) {
 		currentDuration:0,
 		toRemove:false,
 	}
+	if(self.name === 'knife') {
+		self.cooldown = 1*25;
+		self.duration = .25*25;
+	}
 	if(self.name === 'dash') {
 		self.cooldown = 4*25;
 		self.duration = 25/5;
@@ -25,10 +29,14 @@ var Ability = function(name, level) {
 		//currentDuration = 0;
 	}
 	if(self.name === 'bigShield') {
-	        self.cooldown = 6;	
+	        self.cooldown = 6*25;	
+		self.duration = 2*25;
+		self.hp = 30;
 	}
 	if(self.name === 'smallShield') {
-	        self.cooldown = 6;
+	        self.cooldown = 3*25;
+		self.duration = .75*25;
+		self.hp = 10;
 	}
 	if(self.name === 'fireball') {
 	        self.cooldown = 3*25;
@@ -50,14 +58,6 @@ var Ability = function(name, level) {
 	}
 	return self;
 }
-
-
-
-
-
-
-
-
 
 
 
