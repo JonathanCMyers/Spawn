@@ -100,6 +100,13 @@ io.sockets.on('connection', function(socket) {
 			SOCKET_LIST[i].emit('addToChat',playerName + ': ' + msg);
 		}
 	});
+	
+	socket.on('playerClosePage',function() {
+		delete Player.list[selfId];
+		removePack.player.push(selfId);
+		console.log('removed');
+	});
+	
 });	
 
 setInterval(function() {

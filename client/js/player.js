@@ -231,7 +231,7 @@ var Player = function(id, user_name) {
 		var abilityCount = 5;
 		console.log("ability given:");
 		var r = Math.floor(Math.random()*abilityCount+1);
-		r = 5;
+		//r = 5;
 		if(r === 1) {
 			self.abilities[81] = Ability('dash',1);
 			self.cooldowns[81] = 0;
@@ -379,5 +379,3 @@ Player.update = function() {
         }
         return pack;
 }
-
-

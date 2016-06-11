@@ -81,7 +81,7 @@
 		chatInput.value = '';
 	}
 
-	//game
+	//game	
 	var Img = {};
 	Img.player = new Image();
 	Img.player.src = '/client/img/player.png';
@@ -106,6 +106,7 @@
 		self.hpMax = initPack.hpMax;
 		self.score = initPack.score;
 		self.shieldHP = initPack.shieldHP;
+		self.respawning = initPack.respawning;
 		
 		self.draw = function() {
 			var x = self.x - Player.list[selfId].x + WIDTH/2;
@@ -121,16 +122,23 @@
 			var width = Img.player.width*2;
 			var height = Img.player.height*2;
 			
-			ctx.drawImage(Img.player,0,0,Img.player.width,
-				Img.player.height, x-width/2,
-				y-height/2, width, height);
-
-			if(self.shieldHP > 0) {
-				ctx.beginPath();
-				ctx.arc(x,y,34,0,2*Math.PI);
-				ctx.stroke();
-			}
+			if(!self.respawning) {
+				ctx.drawImage(Img.player,0,0,Img.player.width,
+					Img.player.height, x-width/2,
+					y-height/2, width, height);
 	
+				if(self.shieldHP > 0) {
+					ctx.beginPath();
+					ctx.arc(x,y,34,0,2*Math.PI);
+					ctx.stroke();
+				}
+			}
+			else {
+				if(self.id === selfId) {
+					ctx.font = '45px Arial';
+					ctx.fillText('RESPAWNING', x/2, y-20);
+				}
+			}
 		} 
 
 		Player.list[self.id] = self;
@@ -188,7 +196,11 @@
 	}
 	Fireball.list = {};
 	
-	var selfId = null;
+	var selfId = -1;
+
+	window.onunload = function() {
+		self.emit('playerClosePage',selfId);
+	}
 
 	socket.on('init',function(data) {
 		if(data.selfId)
@@ -222,6 +234,8 @@
 					p.score = pack.score;
 				if(pack.shieldHP !== undefined)
 					p.shieldHP = pack.shieldHP;
+				if(pack.respawning !== undefined)
+					p.respawning = pack.respawning;
 			}
 		}
 		for(var i = 0; i < data.bullet.length; i++) {
