@@ -35,7 +35,7 @@ var Ability = function(name, level) {
 	}
 	if(self.name === 'smallShield') {
 	        self.cooldown = 3*25;
-		self.duration = .75*25;
+		self.duration = Math.floor(.75*25);
 		self.hp = 10;
 	}
 	if(self.name === 'fireball') {

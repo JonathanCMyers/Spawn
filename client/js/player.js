@@ -79,17 +79,16 @@ var Player = function(id, user_name) {
 					self.maxSpd = Player_Default_Max_Speed;
 				}
 				if(self.abilities[i].name === 'bigShield') {
-					if(self.shieldHP <= 0) console.log("SHIELD ERROR!");
 					self.shieldHP = self.shieldHP - self.shields[self.bigShieldID].hp;
 					delete self.shields[self.bigShieldID];
 					self.bigShieldID = -1;
 					console.log("Shield removed. " + self.shieldHP);
 				}
 				if(self.abilities[i].name === 'smallShield') {
-					if(self.shieldHP <= 0) console.log("SHIELD ERROR!");
 					self.shieldHP = self.shieldHP - self.shields[self.smallShieldID].hp;
 					delete self.shields[self.smallShieldID];
 					self.smallShieldID = -1;
+					console.log("Shield removed. " + self.shieldHP);
 				}
 				if(self.abilities[i].name === 'fireball') {
 					
@@ -197,6 +196,7 @@ var Player = function(id, user_name) {
 			var duration = self.abilities[keyValue].duration;
 			self.shields[self.smallShieldID] = Shield(hp, duration, self.x, self.y, false);
 			self.shieldHP = self.shieldHP + hp;
+			console.log("Small Shield Created");
 		}
 		if(self.abilities[keyValue].name === 'fireball') {
 			// spit out a fireball in the direction the player is facing
@@ -231,6 +231,7 @@ var Player = function(id, user_name) {
 		var abilityCount = 5;
 		console.log("ability given:");
 		var r = Math.floor(Math.random()*abilityCount+1);
+		r = 4;
 		//r = 5;
 		if(r === 1) {
 			self.abilities[81] = Ability('dash',1);
