@@ -238,6 +238,13 @@ var Player = function(id, user_name) {
 		if(self.abilities[keyValue].name === 'bolts') {
 			// spawn 12(?) bolt objects around the player
 			self.cooldowns[keyValue] = self.abilities[keyValue].cooldown;
+			var bolt1 = Bolt(self.abilities[keyValue], self.x, self.y, 60, self.id);
+			var bolt2 = Bolt(self.abilities[keyValue], self.x, self.y, 120, self.id);
+			var bolt3 = Bolt(self.abilities[keyValue], self.x, self.y, 180, self.id);
+			var bolt4 = Bolt(self.abilities[keyValue], self.x, self.y, 240, self.id);
+			var bolt5 = Bolt(self.abilities[keyValue], self.x, self.y, 300, self.id);
+			var bolt6 = Bolt(self.abilities[keyValue], self.x, self.y, 360, self.id);
+			console.log("bolts created");
 		}
 		
 	}
@@ -247,7 +254,7 @@ var Player = function(id, user_name) {
 		var abilityCount = 5;
 		console.log("ability given:");
 		var r = Math.floor(Math.random()*abilityCount+1);
-		r = 7;
+		r = 8;
 		//r = 5;
 		if(r === 1) {
 			self.abilities[81] = Ability('dash',1);

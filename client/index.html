@@ -201,6 +201,28 @@
 		return self;
 	}
 	Fireball.list = {};
+
+	var Bolt = function(initPack) {
+		var self = {};
+		self.id = initPack.id;
+		self.x = initPack.x;
+		self.y = initPack.y;
+		
+		self.draw = function() {
+			var width = Img.fireball.width/2;
+			var height = Img.fireball.height/2;
+			
+			var x = self.x - Player.list[selfId].x + WIDTH/2;
+			var y = self.y - Player.list[selfId].y + HEIGHT/2;
+			
+			ctx.drawImage(Img.fireball, 0, 0, Img.fireball.width, 
+				Img.fireball.height, x-width/2, y-height/2, width, height);
+		}
+
+		Bolt.list[self.id] = self;
+		return self;
+	}
+	Bolt.list = {};
 	
 	var selfId = -1;
 
@@ -219,6 +241,9 @@
 		}
 		for(var i = 0; i < data.fireball.length; i++) {
 			new Fireball(data.fireball[i]);
+		}
+		for(var i = 0; i < data.bolt.length; i++) {
+			new Bolt(data.bolt[i]);
 		}
 	});
 
@@ -266,6 +291,16 @@
 					f.y = pack.y;
 			}
 		}
+		for(var i = 0; i < data.bolt.length; i++) {
+			var pack = data.bolt[i];
+			var b = Bolt.list[data.bolt[i].id];
+			if(b) {
+				if(pack.x !== undefined)
+					b.x = pack.x;
+				if(pack.y !== undefined)
+					b.y = pack.y;
+			}
+		}
 	});
 
 	// remove
@@ -282,6 +317,9 @@
 		for(var i = 0; i < data.fireball.length; i++) {
 			delete Fireball.list[data.fireball[i]];
 		}
+		for(var i = 0; i < data.bolt.length; i++) {
+			delete Bolt.list[data.bolt[i]];
+		}
 	});
 
 	setInterval(function() {
@@ -295,6 +333,8 @@
 			Bullet.list[i].draw();
 		for(var i in Fireball.list)
 			Fireball.list[i].draw();
+		for(var i in Bolt.list)
+			Bolt.list[i].draw();
 		drawScore();
 	},40);
 

@@ -1,0 +1,5 @@
+Bolts
+Freeze
+Knife
+Change useAbility for Fireball to take an Ability as a parameter
+

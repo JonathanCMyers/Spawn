@@ -39,6 +39,7 @@ eval(fs.readFileSync(__dirname + '/client/js/fireball.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/ability.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/bullet.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/shield.js') + '');
+eval(fs.readFileSync(__dirname + '/client/js/bolt.js') + '');
 /********************/
 /*  End of Imports  */
 /********************/
@@ -114,6 +115,7 @@ setInterval(function() {
 		player:Player.update(),
 		bullet:Bullet.update(),
 		fireball:Fireball.update(),
+		bolt:Bolt.update(),
 	}
 
 	for(var i in SOCKET_LIST) {
@@ -126,15 +128,18 @@ setInterval(function() {
 	initPack.player = [];
 	initPack.bullet = [];
 	initPack.fireball = [];
+	initPack.bolt = [];
 	removePack.player = [];
 	removePack.bullet = [];
 	removePack.fireball = [];
+	removePack.bolt = [];
 },1000/25);
 
 printTotalObjects = function() {
 	var playerLength = 0;
 	var bulletLength = 0;
 	var fireballLength = 0;
+	var boltLength = 0;
 	for(var i in Player.list) {
 		playerLength++;
 	}
@@ -144,7 +149,11 @@ printTotalObjects = function() {
 	for(var i in Fireball.list) {
 		fireballLength++;
 	}
+	for(var i in Bolt.list) {
+		boltLength++;
+	}
 	console.log("Player: " + playerLength);
 	console.log("Bullet: " + bulletLength);
 	console.log("Fireball: " + fireballLength);
+	console.log("Bolt: " + boltLength);
 }
