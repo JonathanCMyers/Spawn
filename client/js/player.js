@@ -29,6 +29,8 @@ var Player = function(id, user_name) {
 	self.smallShieldID = -1;
 	self.shieldHP = 0;
 
+	self.isVisible = true;
+
 	self.respawning = false;
 	self.respawnTimer = 0;
 
@@ -55,6 +57,11 @@ var Player = function(id, user_name) {
 				self.abilities[i].currentDuration--;
 				if(self.abilities[i].currentDuration === 0) {
 					self.abilities[i].toRemove = true;
+				}
+			}
+			if(self.abilities[i].name === 'flicker') {
+				if(self.abilities[i].currentDuration%5 == 0) {
+					self.isVisible = !self.isVisible;
 				}
 			}
 		}
@@ -91,16 +98,20 @@ var Player = function(id, user_name) {
 					console.log("Shield removed. " + self.shieldHP);
 				}
 				if(self.abilities[i].name === 'fireball') {
-					
+					// do nothing
 				}
 				if(self.abilities[i].name === 'freeze') {
-					
+					// do nothing
 				}
 				if(self.abilities[i].name === 'stealth') {
-					
+					self.isVisible = true;
 				}
 				if(self.abilities[i].name === 'bolts') {
-					
+					// do nothing
+				}
+				if(self.abilities[i].name === 'flicker') {
+					self.isVisible = false;
+					delete self.abilities['flicker'];
 				}
 			}
 		}
@@ -133,6 +144,7 @@ var Player = function(id, user_name) {
 			directionFacing:self.directionFacing,
 			shieldHP:self.shieldHP,
 			respawning:self.respawning,
+			visible:self.isVisible,
                 };
         }
 
@@ -146,6 +158,7 @@ var Player = function(id, user_name) {
 			directionFacing:self.directionFacing,
 			shieldHP:self.shieldHP,
                 	respawning:self.respawning,
+			visible:self.isVisible,
 		}
         }
 
@@ -217,7 +230,10 @@ var Player = function(id, user_name) {
 			// NOT SURE HOW TO DO THIS AT THE MOMENT
 			// potentially make a visibility boolean on the player?
 			// and for a brief period have the player flicker out before entering stealth
+			self.abilities[keyValue].currentDuration = self.abilities[keyValue].duration;
 			self.cooldowns[keyValue] = self.abilities[keyValue].cooldown;
+			self.abilities['flicker'] = Ability('flicker',2);
+			self.abilities['flicker'].currentDuration = self.abilities['flicker'].duration;
 		}
 		if(self.abilities[keyValue].name === 'bolts') {
 			// spawn 12(?) bolt objects around the player
@@ -231,7 +247,7 @@ var Player = function(id, user_name) {
 		var abilityCount = 5;
 		console.log("ability given:");
 		var r = Math.floor(Math.random()*abilityCount+1);
-		r = 4;
+		r = 7;
 		//r = 5;
 		if(r === 1) {
 			self.abilities[81] = Ability('dash',1);
@@ -293,6 +309,8 @@ var Player = function(id, user_name) {
 		}
 		*/
 		self.hp = self.hp - hp;
+		self.isVisible = true;
+		self.abilities['flicker'].currentDuration = -1;
 
 		if(self.hp <= 0) {
 			self.respawning = true;

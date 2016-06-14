@@ -48,13 +48,18 @@ var Ability = function(name, level) {
 	        self.cooldown = 6;
 	}
 	if(self.name === 'stealth') {
-	        self.cooldown = 6;
+	        self.cooldown = 10*25;
+		self.duration = 8*25;
 	}
 	if(self.name === 'bolts') {
 	       	self.cooldown = 3*25;
 		self.duration = 1*25;
 		self.speed = 21;
 		self.damage = 20 + ((level-1)*5);
+	}
+	if(self.name === 'flicker') {
+		self.cooldown = 0;
+		self.duration = Math.floor(level*25);
 	}
 	return self;
 }

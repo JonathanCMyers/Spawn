@@ -107,22 +107,25 @@
 		self.score = initPack.score;
 		self.shieldHP = initPack.shieldHP;
 		self.respawning = initPack.respawning;
+		self.isVisible = initPack.visible;
 		
 		self.draw = function() {
 			var x = self.x - Player.list[selfId].x + WIDTH/2;
 			var y = self.y - Player.list[selfId].y + HEIGHT/2;
-			
-			var hpWidth = 30*self.hp / self.hpMax;
-			ctx.fillStyle = 'red';
-			ctx.fillRect(x - hpWidth/2, y-40, hpWidth,4);
-			ctx.fillStyle = 'black';
-			ctx.font = '13px Arial';
-			ctx.fillText(self.number, x-Img.player.width/2, y-42);
+		
+			if(self.isVisible || (self.id === selfId)) {	
+				var hpWidth = 30*self.hp / self.hpMax;
+				ctx.fillStyle = 'red';
+				ctx.fillRect(x - hpWidth/2, y-40, hpWidth,4);
+				ctx.fillStyle = 'black';
+				ctx.font = '13px Arial';
+				ctx.fillText(self.number, x-Img.player.width/2, y-42);
+			}
 			
 			var width = Img.player.width*2;
 			var height = Img.player.height*2;
 			
-			if(!self.respawning) {
+			if(!self.respawning && self.isVisible) {
 				ctx.drawImage(Img.player,0,0,Img.player.width,
 					Img.player.height, x-width/2,
 					y-height/2, width, height);
@@ -133,11 +136,14 @@
 					ctx.stroke();
 				}
 			}
-			else {
+			else if (self.respawning) {
 				if(self.id === selfId) {
 					ctx.font = '45px Arial';
 					ctx.fillText('RESPAWNING', x/2, y-20);
 				}
+			}
+			else if(!self.isVisible) {
+				
 			}
 		} 
 
@@ -236,6 +242,8 @@
 					p.shieldHP = pack.shieldHP;
 				if(pack.respawning !== undefined)
 					p.respawning = pack.respawning;
+				if(pack.visible !== undefined)
+					p.isVisible = pack.visible;
 			}
 		}
 		for(var i = 0; i < data.bullet.length; i++) {
