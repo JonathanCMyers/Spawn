@@ -45,7 +45,13 @@ var Ability = function(name, level) {
 		self.damage = 25 + ((level-1)*5);
 	}
 	if(self.name === 'freeze') {
-	        self.cooldown = 6;
+	        self.cooldown = 6*25;
+		self.duration = Math.floor(1.5*25 + (level-1)*25);
+		self.radius = 80;
+	}
+	if(self.name === 'frozen') {
+		self.cooldown = 0;
+		self.duration = Math.floor(1.5*25 + (level-1)*25);
 	}
 	if(self.name === 'stealth') {
 	        self.cooldown = 10*25;

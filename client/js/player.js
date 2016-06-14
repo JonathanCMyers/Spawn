@@ -103,6 +103,10 @@ var Player = function(id, user_name) {
 				if(self.abilities[i].name === 'freeze') {
 					// do nothing
 				}
+				if(self.abilities[i].name === 'frozen') {
+					self.canMove = true;
+					console.log("frozen effects removed");
+				}
 				if(self.abilities[i].name === 'stealth') {
 					self.isVisible = true;
 				}
@@ -118,6 +122,7 @@ var Player = function(id, user_name) {
 	}
 
         self.updateSpd = function() {
+		if(self.canMove) {
                 if(self.pressingRight && self.x < WIDTH)
 			self.spdX = self.maxSpd;
                 else if(self.pressingLeft && self.x > 0)
@@ -131,6 +136,7 @@ var Player = function(id, user_name) {
                         self.spdY = self.maxSpd;
                 else
                         self.spdY = 0;
+		}
         }
         self.getInitPack = function() {
 		return {
@@ -225,6 +231,7 @@ var Player = function(id, user_name) {
 		if(self.abilities[keyValue].name === 'freeze') {
 			// spawn a freeze object centered where the player is for the duration
 			self.cooldowns[keyValue] = self.abilities[keyValue].cooldown;
+			var freeze = Freeze(self.abilities[keyValue], self.x, self.y, self.id);
 		}
 		if(self.abilities[keyValue].name === 'stealth') {
 			// NOT SURE HOW TO DO THIS AT THE MOMENT
@@ -254,7 +261,7 @@ var Player = function(id, user_name) {
 		var abilityCount = 5;
 		console.log("ability given:");
 		var r = Math.floor(Math.random()*abilityCount+1);
-		r = 8;
+		r = 6;
 		//r = 5;
 		if(r === 1) {
 			self.abilities[81] = Ability('dash',1);
@@ -305,6 +312,12 @@ var Player = function(id, user_name) {
 		
 	}
 
+	self.freeze = function(freezeLevel) {
+		self.canMove = false;
+		self.abilities['frozen'] = Ability('frozen',freezeLevel);
+		self.abilities['frozen'].currentDuration = self.abilities['frozen'].duration;
+	}
+
 	self.damage = function(hp) {
 
 		// NOTE: When messing with damage, remove hp from the shields first before payer hp
@@ -317,7 +330,9 @@ var Player = function(id, user_name) {
 		*/
 		self.hp = self.hp - hp;
 		self.isVisible = true;
-		self.abilities['flicker'].currentDuration = -1;
+		if(self.abilities['flicker']) {
+			delete self.abilities['flicker'];
+		}
 
 		if(self.hp <= 0) {
 			self.respawning = true;
