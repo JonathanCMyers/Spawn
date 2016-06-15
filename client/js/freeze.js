@@ -40,7 +40,7 @@ var Freeze = function(ability, x, y, ownerID) {
 		var y_dist = player.y - self.y;
 		var dist = Math.sqrt(x_dist*x_dist + y_dist*y_dist);
 		if(dist < self.radius && player.id !== self.ownerID) {
-			player.freeze(ability.duration);
+			player.freeze(ability.level);
 		}
 	}
 

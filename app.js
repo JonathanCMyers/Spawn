@@ -103,7 +103,7 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 	
-	socket.on('playerClosePage',function() {
+	socket.on('playerClosePage',function(selfId) {
 		delete Player.list[selfId];
 		removePack.player.push(selfId);
 		console.log('removed');

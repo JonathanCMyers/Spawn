@@ -253,7 +253,7 @@
 	
 	var selfId = -1;
 
-	window.onunload = function() {
+	window.unload = function() {
 		self.emit('playerClosePage',selfId);
 	}
 
