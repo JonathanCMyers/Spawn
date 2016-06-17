@@ -16,7 +16,9 @@ var Ability = function(name, level) {
 	}
 	if(self.name === 'knife') {
 		self.cooldown = 1*25;
-		self.duration = .25*25;
+		self.duration = Math.floor(.25*25);
+		self.speed = 20;
+		self.damage = 20;
 	}
 	if(self.name === 'dash') {
 		self.cooldown = 4*25;

@@ -20,7 +20,7 @@ console.log("Server started.");
 
 var SOCKET_LIST = {};
 var WIDTH = 800;
-var HEIGHT = 600;
+var HEIGHT = 466;
 
 var initPack = {player:[], bullet:[]};
 var removePack = {player:[], bullet:[]};
@@ -41,6 +41,7 @@ eval(fs.readFileSync(__dirname + '/client/js/bullet.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/shield.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/bolt.js') + '');
 eval(fs.readFileSync(__dirname + '/client/js/freeze.js') + '');
+eval(fs.readFileSync(__dirname + '/client/js/knife.js') + '');
 /********************/
 /*  End of Imports  */
 /********************/
@@ -118,6 +119,7 @@ setInterval(function() {
 		fireball:Fireball.update(),
 		bolt:Bolt.update(),
 		freeze:Freeze.update(),
+		knife:Knife.update(),
 	}
 
 	for(var i in SOCKET_LIST) {
@@ -132,11 +134,13 @@ setInterval(function() {
 	initPack.fireball = [];
 	initPack.bolt = [];
 	initPack.freeze = [];
+	initPack.knife = [];
 	removePack.player = [];
 	removePack.bullet = [];
 	removePack.fireball = [];
 	removePack.bolt = [];
 	removePack.freeze = [];
+	removePack.knife = [];
 },1000/25);
 
 printTotalObjects = function() {
@@ -145,6 +149,7 @@ printTotalObjects = function() {
 	var fireballLength = 0;
 	var boltLength = 0;
 	var freezeLength = 0;
+	var knifeLength = 0;
 	for(var i in Player.list) {
 		playerLength++;
 	}
@@ -160,9 +165,13 @@ printTotalObjects = function() {
 	for(var i in Freeze.list) {
 		freezeLength++;
 	}
+	for(var i in Knife.list) {
+		knifeLength++;
+	}
 	console.log("Player: " + playerLength);
 	console.log("Bullet: " + bulletLength);
 	console.log("Fireball: " + fireballLength);
 	console.log("Bolt: " + boltLength);
 	console.log("Freeze: " + freezeLength);
+	console.log("Knife: " + knifeLength);
 }

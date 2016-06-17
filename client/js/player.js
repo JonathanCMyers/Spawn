@@ -48,7 +48,9 @@ var Player = function(id, user_name) {
 		self.updateAbilityDurations();
 		self.updateAbilityCooldowns();
 		self.checkRemoveAbilityEffects();
-		
+		if(Knife.list[self.id] !== undefined) {
+			Knife.list[self.id].updateXY(self.x, self.y);
+		}	
 	}
 
 	self.updateAbilityDurations = function() {
@@ -125,12 +127,12 @@ var Player = function(id, user_name) {
 		if(self.canMove) {
                 if(self.pressingRight && self.x < WIDTH)
 			self.spdX = self.maxSpd;
-                else if(self.pressingLeft && self.x > 0)
+                else if(self.pressingLeft && self.x > 26)
                         self.spdX = -self.maxSpd;
                 else
                         self.spdX = 0;
 
-                if(self.pressingUp && self.y > 0)
+                if(self.pressingUp && self.y > 18)
                         self.spdY = -self.maxSpd;
                 else if(self.pressingDown && self.y < HEIGHT)
                         self.spdY = self.maxSpd;
@@ -180,6 +182,13 @@ var Player = function(id, user_name) {
 	}
 
 	self.useAbility = function(keyValue) {
+		if(!self.respawning) {
+		if(self.abilities[keyValue].name === 'knife') {
+			self.cooldowns[keyValue] = self.abilities[keyValue].cooldown;
+			var degrees = 90*(self.directionFacing+2);
+			var knife = Knife(self.x, self.y, degrees, self.abilities[keyValue], self.id);
+			console.log('knifed');
+		}
 		if(self.abilities[keyValue].name === 'dash') {
 			// make it so that the player can't change direction mid-dash
 				// create a counter for the duration of dash to make this
@@ -253,7 +262,7 @@ var Player = function(id, user_name) {
 			var bolt6 = Bolt(self.abilities[keyValue], self.x, self.y, 360, self.id);
 			console.log("bolts created");
 		}
-		
+		}
 	}
 
 	self.giveRandomAbility = function() {
@@ -326,17 +335,18 @@ var Player = function(id, user_name) {
 			
 		}
 		*/
-		self.hp = self.hp - hp;
-		self.isVisible = true;
-		if(self.abilities['flicker']) {
-			delete self.abilities['flicker'];
+		if(!self.respawning) {
+			self.hp = self.hp - hp;
+			self.isVisible = true;
+			if(self.abilities['flicker']) {
+				delete self.abilities['flicker'];
+			}
+	
+			if(self.hp <= 0) {
+				self.respawning = true;
+				self.respawnTimer = Player_Respawn_Timer;
+			}
 		}
-
-		if(self.hp <= 0) {
-			self.respawning = true;
-			self.respawnTimer = Player_Respawn_Timer;
-		}
-
 	}
 
 	self.checkRespawn = function() {
